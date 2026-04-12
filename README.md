@@ -17,8 +17,9 @@ A collection of global commands for [Claude Code](https://docs.anthropic.com/en/
 
 **Option A: Clone and symlink (recommended)**
 
-This lets you pull updates with `git pull`:
+This lets you pull updates with `git pull`.
 
+macOS / Linux:
 ```bash
 git clone https://github.com/Pydis123/claude-commands.git ~/claude-commands
 
@@ -26,13 +27,34 @@ git clone https://github.com/Pydis123/claude-commands.git ~/claude-commands
 ln -s ~/claude-commands/cleanclaudemd.md ~/.claude/commands/cleanclaudemd.md
 ```
 
+Windows (PowerShell as Administrator):
+```powershell
+git clone https://github.com/Pydis123/claude-commands.git $HOME\claude-commands
+
+# Symlink each command you want
+New-Item -ItemType SymbolicLink `
+  -Path "$HOME\.claude\commands\cleanclaudemd.md" `
+  -Target "$HOME\claude-commands\cleanclaudemd.md"
+```
+
+> **Note:** On Windows, creating symlinks requires either Administrator privileges or [Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development) enabled.
+
 **Option B: Copy individual files**
 
+macOS / Linux:
 ```bash
-# Download a single command directly
 curl -o ~/.claude/commands/cleanclaudemd.md \
   https://raw.githubusercontent.com/Pydis123/claude-commands/main/cleanclaudemd.md
 ```
+
+Windows (PowerShell):
+```powershell
+Invoke-WebRequest `
+  -Uri "https://raw.githubusercontent.com/Pydis123/claude-commands/main/cleanclaudemd.md" `
+  -OutFile "$HOME\.claude\commands\cleanclaudemd.md"
+```
+
+> **Note:** With Option B you get a copy, not a link. To update, re-run the command.
 
 After installation, the command will appear when you type `/clean` in Claude Code.
 
