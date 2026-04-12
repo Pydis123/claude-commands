@@ -20,7 +20,7 @@ A collection of global commands for [Claude Code](https://docs.anthropic.com/en/
 This lets you pull updates with `git pull`:
 
 ```bash
-git clone https://github.com/andershyden/claude-commands.git ~/claude-commands
+git clone https://github.com/Pydis123/claude-commands.git ~/claude-commands
 
 # Symlink each command you want
 ln -s ~/claude-commands/cleanclaudemd.md ~/.claude/commands/cleanclaudemd.md
@@ -31,7 +31,7 @@ ln -s ~/claude-commands/cleanclaudemd.md ~/.claude/commands/cleanclaudemd.md
 ```bash
 # Download a single command directly
 curl -o ~/.claude/commands/cleanclaudemd.md \
-  https://raw.githubusercontent.com/andershyden/claude-commands/main/cleanclaudemd.md
+  https://raw.githubusercontent.com/Pydis123/claude-commands/main/cleanclaudemd.md
 ```
 
 After installation, the command will appear when you type `/clean` in Claude Code.
