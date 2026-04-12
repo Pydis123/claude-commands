@@ -7,6 +7,7 @@ A collection of global commands for [Claude Code](https://docs.anthropic.com/en/
 | Command | Description |
 |---------|-------------|
 | [`/cleanclaudemd`](#cleanclaudemd) | Audit and optimize your CLAUDE.md to reduce token cost without losing functionality |
+| [`/endsession`](#endsession) | End session gracefully — persist context, prune memory, prepare for /clear |
 
 ## Prerequisites
 
@@ -117,6 +118,70 @@ The core insight behind this command:
 | Reference | "See `FILE.md` for details" | Only when Claude actually reads it |
 
 The main optimization is moving information from level 1/2 to level 3 where it's safe to do so, keeping a short inline summary as a trigger.
+
+### /endsession
+
+Automates session cleanup at the end of a Claude Code session. It persists what's worth keeping, prunes what's stale, and tells you when it's safe to run `/clear`.
+
+The command never destructively removes anything you haven't explicitly reviewed. When uncertain about a memory entry — keep it. Memory files are not git-tracked; deletion is permanent.
+
+#### How to use
+
+```
+/endsession
+```
+
+No arguments. Run it at the end of any session, in any project.
+
+#### The 4-step flow
+
+**Step 1 — Adaptive project file update**
+
+Reads the project's `CLAUDE.md` (if it exists) and scans for session-end instructions: files to update on close (such as a worklog, decisions log, or roadmap), `.md` file policies, or documentation routines. If such instructions exist, it follows them — but only updates files that actually need updating and never creates files that don't already exist. Projects without a `CLAUDE.md`, or whose `CLAUDE.md` has no session-end policy, skip this step entirely.
+
+**Step 2 — Save new information to memory**
+
+Reviews the session's conversation for information worth persisting across sessions. Saves to auto memory in the standard categories: user preferences, feedback and corrections, ongoing project context (with relative dates converted to absolute), and pointers to external systems. Updates existing memory entries rather than duplicating them. Respects project-level memory policies (e.g. if `CLAUDE.md` says "project knowledge belongs in WORKLOG.md, not memory").
+
+**Step 3 — Conservative memory cleanup**
+
+Reads all memory files and removes only entries that are obviously duplicated (the same information was just written to a project file) or clearly outdated (references tools, files, or people that demonstrably no longer exist). Everything uncertain is kept. The MEMORY.md index is updated to reflect any changes.
+
+**Step 4 — Summary**
+
+Reports what happened: which project files were updated, what was saved or updated in memory, what was cleaned and why, and whether there are uncommitted file changes from the session wrap-up. Ends with the instruction to run `/clear`.
+
+#### Design principles
+
+- **Never destructive.** When uncertain, keep. Memory deletion is permanent.
+- **Adaptive to CLAUDE.md.** The command reads and respects your project's conventions — no hardcoded assumptions about file names or structure.
+- **Portable.** Works in any project, with or without a CLAUDE.md. Projects without a memory or documentation policy get a tip on how to add one.
+- **No confirmation prompts.** Executes all four steps, then presents the summary. You review the result, not each individual action.
+
+#### Why `/clear` is manual
+
+`/endsession` cannot run `/clear` automatically — Claude Code does not allow slash commands to trigger other slash commands. After reviewing the summary, you run `/clear` yourself. This is intentional: the summary gives you a moment to confirm everything looks right before clearing the session.
+
+#### Typical workflow
+
+```
+/pusha          # push your commits (optional)
+/endsession     # persist context, clean memory
+/clear          # start fresh
+```
+
+Or simply:
+
+```
+/endsession
+/clear
+```
+
+#### Tip: .md file policy
+
+If your project has no `CLAUDE.md`, or its `CLAUDE.md` has no session-end instructions, `/endsession` will skip step 1 entirely and remind you with:
+
+> **Tip:** You can improve cross-session persistence by adding a .md file policy to your CLAUDE.md (e.g. a WORKLOG.md for work status or DECISIONS.md for architecture decisions).
 
 ## Uninstalling
 
