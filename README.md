@@ -8,6 +8,7 @@ A collection of global slash commands for [Claude Code](https://docs.anthropic.c
 |---------|-------------|
 | [`/cleanclaudemd`](cleanclaudemd/) | Audit your CLAUDE.md and find where you're wasting tokens |
 | [`/endsession`](endsession/) | Save context and clean up memory before ending a session |
+| [`/pushit`](pushit/) | Quality-gate and push to GitHub — commit, verify, push |
 
 Click a command name to see its full documentation.
 
@@ -40,6 +41,7 @@ mkdir -p ~/.claude/commands
 # 3. Symlink the commands you want
 ln -s ~/claude-commands/cleanclaudemd/cleanclaudemd.md ~/.claude/commands/cleanclaudemd.md
 ln -s ~/claude-commands/endsession/endsession.md ~/.claude/commands/endsession.md
+ln -s ~/claude-commands/pushit/pushit.md ~/.claude/commands/pushit.md
 ```
 
 **Windows (PowerShell as Administrator):**
@@ -59,6 +61,10 @@ New-Item -ItemType SymbolicLink `
 New-Item -ItemType SymbolicLink `
   -Path "$HOME\.claude\commands\endsession.md" `
   -Target "$HOME\claude-commands\endsession\endsession.md"
+
+New-Item -ItemType SymbolicLink `
+  -Path "$HOME\.claude\commands\pushit.md" `
+  -Target "$HOME\claude-commands\pushit\pushit.md"
 ```
 
 > **Note:** On Windows, creating symlinks requires either Administrator privileges or [Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development) enabled.
@@ -114,12 +120,14 @@ Remove the symlinks for any commands you want to uninstall:
 ```bash
 rm ~/.claude/commands/cleanclaudemd.md
 rm ~/.claude/commands/endsession.md
+rm ~/.claude/commands/pushit.md
 ```
 
 **Windows (PowerShell):**
 ```powershell
 Remove-Item "$HOME\.claude\commands\cleanclaudemd.md"
 Remove-Item "$HOME\.claude\commands\endsession.md"
+Remove-Item "$HOME\.claude\commands\pushit.md"
 ```
 
 If you cloned the repository and want to remove it entirely:
