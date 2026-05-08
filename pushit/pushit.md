@@ -69,4 +69,42 @@ Pushing N commit(s) to origin/<branch>:
 Run `git push`.
 
 - **If rejected (non-fast-forward):** Explain that the remote branch has new commits that are not in the local branch. Suggest running `git pull --rebase` to integrate them, but do NOT run it automatically. Stop and let the user decide.
-- **If successful:** Print the result. Done.
+- **If successful:** Print the result. Continue to Step 6.
+
+## Step 6: Post-push cleanup hooks
+
+Only run these steps if **all three** are true:
+- Push succeeded in Step 5
+- The branch pushed is a `feature/`-branch (not `main`/`master`)
+- Project has a `.claude/worktrees/` directory (indicates dev-workflow-system is active)
+
+If any condition is false → done, exit.
+
+### 6a — Mark worktree for cleanup
+
+Extract `<topic>` by stripping the `feature/` prefix from the current branch name.
+Create a flag file in the project root:
+
+```bash
+touch ".claude/worktrees/<topic>.cleanup-pending"
+```
+
+This signals to a Claude session running in the project's main directory that the
+worktree at `.claude/worktrees/<topic>/` is ready to be removed. Cleanup happens
+proactively at the next user message in that session — not here.
+
+### 6b — Close current Warp tab
+
+Detect OS:
+
+- **macOS** (`uname -s` returns `Darwin`):
+  ```bash
+  osascript -e 'tell application "System Events" to keystroke "w" using command down'
+  ```
+- **Windows** (`uname -s` returns `MINGW*`, `MSYS*`, or `CYGWIN*`):
+  Print: `Done! Press Ctrl+W to close this tab.`
+- **Linux** (`uname -s` returns `Linux`):
+  Print: `Done! Press Ctrl+Shift+W to close this tab.`
+
+On Mac the tab actually closes automatically. Other OSes get an instruction since
+reliable cross-platform automation isn't available in Warp on Windows/Linux yet.
